@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ] # 或您的主分支名稱
+    
+permissions:
+  contents: write  # 添加這個權限設定    
 
 jobs:
   build-and-deploy:
