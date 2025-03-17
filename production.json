@@ -1,0 +1,7 @@
+{
+    "serverUrl": "https://your-real-domain.com",
+    "database": {
+      "host": "cloud-db",
+      "tables": ["seats", "orders", "menu"]
+    }
+  }

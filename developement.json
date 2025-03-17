@@ -1,0 +1,7 @@
+{
+    "serverUrl": "http://localhost:3000",
+    "database": {
+      "host": "local-db",
+      "tables": ["seats", "orders", "menu"]
+    }
+  }
