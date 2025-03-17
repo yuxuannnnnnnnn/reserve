@@ -1,4 +1,9 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
+
 export default defineConfig({
-  base: '/reserve/'
-})
+  base: '/reserve/',
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+  },
+});
