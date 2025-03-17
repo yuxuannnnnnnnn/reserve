@@ -1,8 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getDatabase, ref, set, get, child, update, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-// 檢查當前環境
-const isProduction = window.location.hostname.includes('github.io') || window.location.hostname.includes('您的正式網域');
+// 更精確的環境檢測邏輯
+const isProduction = window.location.hostname.includes('github.io');
+const isDevelopment = window.location.hostname === 'localhost' || 
+                      window.location.hostname === '127.0.0.1';
+
+
 
 // 設定正式環境和測試環境的配置
 const productionConfig = {
@@ -25,8 +29,15 @@ const developmentConfig = {
   appId: "G-PC427R3YWP"
 };
 
-// 根據環境選擇配置
-const firebaseConfig = isProduction ? productionConfig : developmentConfig;
+// 選擇配置
+let firebaseConfig;
+if (isProduction) {
+    firebaseConfig = productionConfig;
+    console.log("使用正式環境配置");
+} else {
+    firebaseConfig = developmentConfig;
+    console.log("使用測試環境配置");
+}
 
 // 初始化 Firebase
 const app = initializeApp(firebaseConfig);
