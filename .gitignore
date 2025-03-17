@@ -1,0 +1,4 @@
+# 忽略環境變數檔案
+.env
+.env.development
+.env.production

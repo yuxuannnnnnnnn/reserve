@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>餐廳桌位管理</title>
+    <style>
+        h1 {
+            font-size: 0px; /* 調整 h1 的字體大小 */
+        }
+        h2 {
+            font-size: 0px; /* 調整 h2 的字體大小 */
+        }
+        h3 {
+            font-size: 0px; /* 調整 h3 的字體大小 */
+        }
+        /* 預設樣式（直式） */
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    text-align: center;
+    margin: 20px;
+    padding: 0;
+}
+
+.table-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0px;
+}
+
+.table {
+    width: 90px;
+    height: 90px;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    position: relative;
+    padding: 5px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0px;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 橫式布局（螢幕寬度大於 700px） */
+@media screen and (min-width: 700px) {
+    body {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    .table-container {
+        flex: 1;
+        max-width: 50%;
+        margin-right: 20px;
+    }
+
+    .reservation-container {
+        flex: 1;
+        max-width: 50%;
+    }
+}
+        .reservation-id {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 12px;
+            color: #825400;
+        }
+        .reservation-id-secondary {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 12px;
+            color: #825400;
+            opacity: 0.6;
+        }
+        .empty { background-color: #ccc; }
+        .reserved { background-color: #EFB700; }
+        .occupied { background-color: #04AA6D; color: black; }
+        .finished { background-color: #d9534f; color: white; }
+        .finished::after { content: "收桌中"; font-size: 14px; }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 0px;
+        }
+        input, button, select {
+            padding: 10px;
+            font-size: 14px;
+        }
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .name-buttons {
+            display: flex;
+            gap: 5px;
+            margin: 0; /* 移除 margin-top，讓它和輸入框同一行 */
+        }
+
+        .name-buttons button {
+            padding: 5px 10px;
+            background-color: #ddd;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .name-buttons button.active {
+            background-color: #000000;
+            color: white;
+        }
+        .guest-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .guest-id-corner {
+            position: absolute; /* 絕對定位 */
+            top: 0px;  
+            left: 0px;  
+            font-size: 15px; /* 調整字體大小 */
+            font-weight: 700; /* 調整字體粗度 */
+            text-align: center;
+            color: #825400; /* 調整顏色 */
+            padding: 3px 14px;
+            background-color:#EFB700; 
+            border-radius: 8px 0px 30px 0px; 
+        }
+
+        .guest-details {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 16px; /* 調整字體大小 */
+            color: #000000; /* 調整顏色 */
+   
+        }
+        .waiting-guest-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+
+        .waiting-guest-info .guest-id-corner {
+            background-color: #C6C6C6; 
+            color: #535353; 
+        
+        }
+
+        .waiting-guest-info .guest-details {
+            color: #000000; /* 深藍色文字 */
+        }
+
+        .waitlist-item {
+            position: relative; /* 讓子元素可以絕對定位 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #F7F7F7;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .button-container {
+             display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+        .table-button {
+            padding: 5px 10px;
+            background-color: #04AA6D;
+            color: white;
+            border: none;
+            cursor: pointer;
+            
+            border-radius: 2px;
+        }
+        .confirm-button {
+            padding: 5px 10px;
+            background-color: #000000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+        .cancel-button {
+            padding: 5px 10px;
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+        .time-info {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .before-time {
+            color: #4286BD;
+        }
+        .after-time {
+            color: #e51f1a;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+        /* 父級容器樣式 */
+        .waitlist-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;     /* 垂直置中 */
+            width: 100%;            /* 佔滿父元素寬度 */
+            margin: 10px 0 ;
+            margin-top: 0px;         /* 上下留一些間距 */
+        }
+
+        /* 新增的 Tab 样式 */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0px;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .tab-button {
+            flex: 1;
+            padding: 6px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f8f8f8;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .tab-button.active {
+            background-color: #000000;
+            color: white;
+            border-color: #000000;
+        }
+        .tab-button:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+        .tab-button:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+        .tab-content {
+            display: none;
+            width: 100%;
+        }
+        .tab-content.active {
+            display: block;
+            
+        }
+        .table-button:disabled {
+            background-color: #cccccc !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
+        }
+        /* 添加同步提示的樣式 */
+        .sync-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 1000;
+            transition: opacity 0.3s;
+        }
+        .syncing {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .synced {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .sync-error {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <h1>餐廳桌位管理</h1>
+    <!-- 同步狀態提示 -->
+    <div id="syncStatus" class="sync-status" style="display: none;"></div>
+
+    <!-- 桌位區 -->
+    <div class="table-container" id="tables"></div>
+
+    <!-- 訂位和候位區 -->
+    <div class="reservation-container">
+        <!-- Tab 切換按鈕 -->
+        <div class="tabs">
+            <div class="tab-button active" onclick="openTab('reservedTab')">訂位</div>
+            <div class="tab-button" onclick="openTab('waitingTab')">候位</div>
+        </div>
+
+        <!-- 訂位 Tab 內容 -->
+        <div id="reservedTab" class="tab-content active">
+            <h2>已訂位</h2>
+            <ul id="reservedList"></ul>
+            <div class="input-container">
+                <div class="row">
+                    <input type="number" id="reservedCount" placeholder="人數" min="1">
+                </div>
+                <div class="row">
+                    <input type="text" id="reservedName" placeholder="姓氏" style="width: 82px;">
+                    <div class="name-buttons">
+                        <button id="mrButtonReserved" onclick="selectTitleReserved('先生')">先生</button>
+                        <button id="msButtonReserved" onclick="selectTitleReserved('小姐')">小姐</button>
+                    </div>
+                </div>
+                <input type="tel" id="reservedPhone" placeholder="手機">
+                <select id="reservedTime">
+                    <option value="11:00">11:00</option>
+                    <option value="11:30">11:30</option>
+                    <option value="12:00">12:00</option>
+                    <option value="12:30">12:30</option>
+                    <option value="13:00">13:00</option>
+                    <option value="17:00">17:00</option>
+                    <option value="17:30">17:30</option>
+                    <option value="18:00">18:00</option>
+                    <option value="18:30">18:30</option>
+                    <option value="19:00">19:00</option>
+                    <option value="19:30">19:30</option>
+                    <option value="20:00">20:00</option>
+                </select>
+                <button onclick="addToReservedList()">新增訂位</button>
+            </div>
+        </div>
+
+        <!-- 候位 Tab 內容 -->
+        <div id="waitingTab" class="tab-content">
+            <h3>已候位</h3>
+            <ul id="waitingList"></ul>
+            <div class="input-container">
+                <div class="row">
+                    <input type="number" id="waitingCount" placeholder="人數" min="1">
+                </div>
+                <div class="row">
+                    <input type="text" id="waitingName" placeholder="姓氏" style="width: 82px;">
+                    <div class="name-buttons">
+                        <button id="mrButtonWaiting" onclick="selectTitleWaiting('先生')">先生</button>
+                        <button id="msButtonWaiting" onclick="selectTitleWaiting('小姐')">小姐</button>
+                    </div>
+                </div>
+                <input type="tel" id="waitingPhone" placeholder="手機">
+                <button onclick="addToWaitingList()">新增候位</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module" src="./index.js"></script>    
+</body>
+</html>
