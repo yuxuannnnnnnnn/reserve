@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "reserve-demo-ae1eb"
+  },
+  "targets": {
+    "reserve-demo-ae1eb": {
+      "hosting": {
+        "testing": [
+          "reserve-test"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
